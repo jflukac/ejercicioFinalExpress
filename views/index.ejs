@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TODO List</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col d-col w-100">
+          <div>
+            <form action="/tasks" method="post">
+              <input type="text" class="form-control" name="title">
+              <button class="btn btn-primary">Enviar</button>
+            </form>
+          </div>
+          <% if (alert) { %>
+            <div class="alert">
+              <p class="invalid-text">El texto debe contener al menos 3 caracteres</p>
+            </div>
+          <% } %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="list-group">
+            <% tareas.forEach(tarea => { %>
+              <div class="list-group-item">
+                <a href="/tasks/<%= tarea.id %> ">
+                  <%= tarea.name %> 
+                </a>
+  
+                <form action="/tasks/<%= tarea.id %> " method="POST">
+                  <button class="btn item-delete">Borrar</button>
+                </form>
+              </div>
+            <% }) %>
+            
+          </div>
+        </div>
+      </div>
+    </div>    
+  </body>
+</html>
