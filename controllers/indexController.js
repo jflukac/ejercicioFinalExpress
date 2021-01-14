@@ -2,17 +2,18 @@ const fs = require('fs');
 const path = require('path');
 const tareasFilePath = path.join(__dirname, '../data/tasks.json');
 const tareas = JSON.parse(fs.readFileSync(tareasFilePath, 'utf-8'));
+const {check, validationResult, body} = require('express-validator')
 
-let alert = false
+
 
 module.exports = {
-    home: function(req, res, next) {
-        res.render('index', {tareas, alert});
+    home: (req, res) => {
+        res.render('index', {tareas});
     },
     saveTask: (req, res, next) => {
-        if (req.body.title.length < 3) {
-            alert = true;
-            res.render('index', {tareas, alert});
+        let errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.render('index', {tareas, errors: errors.errors});
         } else {
             let task = {
                 id: Date.now(),
@@ -33,20 +34,22 @@ module.exports = {
     },
     show: (req, res) => {
         let tareaMostrar = tareas.find(item => item.id == req.params.id)
-        res.render('item', {tareaMostrar, tareas, alert})
+        res.render('item', {tareaMostrar, tareas})
     },
     updateTask: (req, res) => {
-        if (req.body.title.length < 3) {
-            let alert = true;
-            res.redirect('/', {alert});
+        
+        let errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.render('index', {tareas, errors: errors.errors});
+        } else {
+            tareas.forEach(task => {
+                if (task.id == req.params.id) {
+                    task.id = req.params.id
+                    task.name = req.body.title
+                    fs.writeFileSync(tareasFilePath, JSON.stringify(tareas))
+                }
+            })
+            res.redirect('/')
         }
-        tareas.forEach(task => {
-            if (task.id == req.params.id) {
-                task.id = req.params.id
-                task.name = req.body.title
-                fs.writeFileSync(tareasFilePath, JSON.stringify(tareas))
-            }
-        })
-        res.redirect('/')
     }
 }

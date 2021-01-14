@@ -11,15 +11,15 @@
       <div class="row">
         <div class="col d-col w-100">
           <div>
-            <form action="/tasks/edit/<%= tareaMostrar.id %>" method="post">
+            <form action="/tasks/edit/<%= tareaMostrar.id %>/?_method=put" method="post">
               <input type="text" class="form-control" name="title" 
                 value="<%= tareaMostrar.name %>">
               <button class="btn btn-primary">Actualizar</button>
             </form>
           </div>
-          <% if (alert) { %>
+          <% if (typeof errors != 'undefined') { %>
             <div class="alert">
-              <p class="invalid-text">El texto debe contener al menos 3 caracteres</p>
+              <p class="invalid-text"><%= errors.msg %></p>
             </div>
           <% } %>
         </div>
